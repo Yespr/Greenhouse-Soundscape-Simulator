@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Greenhouse Soundscape</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1 class="brand-title">
+            <img src="/assets/greenhouse_soundscape_logo.png" alt="Greenhouse Soundscape" class="brand-logo" />
+          </h1>
+          <p id="engineStatus">Loading...</p>
+        </div>
+        <div class="engine-controls">
+          <select id="modeSelect" aria-label="Soundscape mode">
+            <option value="off">Off</option>
+            <option value="day">Day</option>
+            <option value="evening">Evening</option>
+            <option value="auto">Auto</option>
+          </select>
+          <button id="startButton" type="button">Start</button>
+          <button id="stopButton" type="button" class="secondary">Stop</button>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h2>Upload Sound</h2>
+        <form id="uploadForm" class="upload-form">
+          <div class="file-field">
+            <span class="field-label">Audio file</span>
+            <div class="file-picker">
+              <input id="fileInput" class="visually-hidden-file" name="file" type="file" accept=".mp3,.wav,.ogg,audio/mpeg,audio/wav,audio/ogg" required />
+              <label for="fileInput" class="file-button">Choose Audio File</label>
+              <span id="fileName" class="file-name">No file selected</span>
+            </div>
+          </div>
+          <button type="submit">Upload</button>
+        </form>
+        <p class="hint">Uploads create a sound entry automatically. Configure behavior below.</p>
+        <p id="uploadError" class="error" role="alert"></p>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h2>Configured Sounds</h2>
+          <button id="refreshButton" type="button" class="secondary">Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Enabled</th>
+                <th>Name</th>
+                <th>Path</th>
+                <th>Profile</th>
+                <th>Type</th>
+                <th>Volume</th>
+                <th>Advanced</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="soundsTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <footer class="version-label">v1.0</footer>
+    <script src="/app.js"></script>
+  </body>
+</html>
