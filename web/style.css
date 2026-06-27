@@ -93,10 +93,18 @@ h2 {
 }
 
 .engine-controls,
-.actions {
+.actions,
+.section-actions {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+.save-status {
+  color: var(--muted);
+  font-size: 13px;
+  min-width: 108px;
+  text-align: right;
 }
 
 .panel {

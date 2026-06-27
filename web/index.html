@@ -47,7 +47,11 @@
       <section class="panel">
         <div class="section-title">
           <h2>Configured Sounds</h2>
-          <button id="refreshButton" type="button" class="secondary">Refresh</button>
+          <div class="section-actions">
+            <span id="saveStatus" class="save-status"></span>
+            <button id="saveAllButton" type="button">Save All</button>
+            <button id="refreshButton" type="button" class="secondary">Refresh</button>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -68,7 +72,7 @@
         </div>
       </section>
     </main>
-    <footer class="version-label">v1.0</footer>
+    <footer class="version-label">v1.1</footer>
     <script src="/app.js"></script>
   </body>
 </html>

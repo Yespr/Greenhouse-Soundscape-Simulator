@@ -8,6 +8,8 @@ const modeSelect = document.querySelector("#modeSelect");
 const startButton = document.querySelector("#startButton");
 const stopButton = document.querySelector("#stopButton");
 const refreshButton = document.querySelector("#refreshButton");
+const saveAllButton = document.querySelector("#saveAllButton");
+const saveStatus = document.querySelector("#saveStatus");
 const allowedUploadExtensions = [".mp3", ".wav", ".ogg"];
 
 async function api(path, options = {}) {
@@ -89,7 +91,6 @@ function renderSoundRows(sound) {
       <td><button type="button" data-action="toggle-advanced" class="secondary">Settings</button></td>
       <td class="actions">
         <button type="button" data-action="test" class="secondary">Test</button>
-        <button type="button" data-action="save">Save</button>
         <button type="button" data-action="delete" class="danger">Delete</button>
       </td>
     </tr>
@@ -173,6 +174,7 @@ async function loadAll() {
   const [sounds, state] = await Promise.all([api("/api/sounds"), api("/api/engine")]);
   renderSounds(sounds);
   renderEngine(state);
+  saveStatus.textContent = "";
 }
 
 uploadForm.addEventListener("submit", async (event) => {
@@ -222,10 +224,6 @@ soundsTable.addEventListener("click", async (event) => {
   }
 
   try {
-    if (action === "save") {
-      await api(`/api/sounds/${id}`, { method: "PUT", body: JSON.stringify(soundPayload(row)) });
-    }
-
     if (action === "test") {
       const result = await api(`/api/sounds/${id}/test`, { method: "POST" });
       button.textContent = result.repeat_count ? `Preview x${result.repeat_count}` : "Playing";
@@ -246,12 +244,8 @@ soundsTable.addEventListener("click", async (event) => {
 });
 
 soundsTable.addEventListener("change", async (event) => {
-  if (event.target.dataset.field !== "enabled") return;
-  const row = event.target.closest(".sound-row");
-  await api(`/api/sounds/${row.dataset.id}`, {
-    method: "PUT",
-    body: JSON.stringify({ enabled: event.target.checked }),
-  });
+  if (!event.target.dataset.field) return;
+  markUnsaved();
 });
 
 soundsTable.addEventListener("input", (event) => {
@@ -261,7 +255,38 @@ soundsTable.addEventListener("input", (event) => {
   if (label) {
     label.textContent = `${event.target.value}%`;
   }
+  markUnsaved();
 });
+
+async function saveAllSounds() {
+  const rows = [...soundsTable.querySelectorAll(".sound-row")];
+  if (!rows.length) return;
+
+  saveAllButton.disabled = true;
+  saveStatus.textContent = "Saving...";
+
+  try {
+    await Promise.all(
+      rows.map((row) =>
+        api(`/api/sounds/${row.dataset.id}`, {
+          method: "PUT",
+          body: JSON.stringify(soundPayload(row)),
+        })
+      )
+    );
+    saveStatus.textContent = "Saved";
+    await loadAll();
+  } catch (error) {
+    saveStatus.textContent = "";
+    uploadError.textContent = error.message;
+  } finally {
+    saveAllButton.disabled = false;
+  }
+}
+
+function markUnsaved() {
+  saveStatus.textContent = "Unsaved changes";
+}
 
 modeSelect.addEventListener("change", async () => {
   const state = await api("/api/engine/mode", {
@@ -280,6 +305,7 @@ stopButton.addEventListener("click", async () => {
 });
 
 refreshButton.addEventListener("click", loadAll);
+saveAllButton.addEventListener("click", saveAllSounds);
 
 loadAll().catch((error) => {
   engineStatus.textContent = `Error: ${error.message}`;

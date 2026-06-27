@@ -4,6 +4,8 @@ Local FastAPI app for configuring and running greenhouse ambient soundscapes on 
 
 This is a clean v1 skeleton. It stores sound configuration in SQLite, serves a basic local web UI, and exposes realistic audio-engine interfaces without changing system audio settings.
 
+Current version: `1.1`
+
 ## Features
 
 - List, create, update, and delete sound entries.
@@ -46,6 +48,14 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+The Python audio stack is installed from `requirements.txt`:
+
+- `sounddevice` for real-time audio output.
+- `soundfile` for decoding audio files.
+- `numpy` for mixing audio buffers.
+
+If `sounddevice` fails to install on Raspberry Pi, check that `portaudio19-dev` is installed. If `soundfile` fails to load audio files, check that `libsndfile1` is installed.
 
 Put audio files under `sounds/`, then start the app:
 
